@@ -16,9 +16,10 @@ class KakaoAddressSearchServiceTest {
 
     @Test
     @DisplayName("[requestAddressSearch][success]")
-    void if_address_given_ (){
+    void if_address_given_success() {
         //given
         String address = "경기도 군포시";
+
         //when
         var result = kakaoAddressSearchService.requestAddressSearch(address);
 
@@ -26,6 +27,5 @@ class KakaoAddressSearchServiceTest {
         assertFalse(result.getDocumentList().isEmpty());
         assertTrue(result.getMetaDto().getTotalCount() > 0);
         assertNotNull(result.getDocumentList().get(0).getAddressName());
-
     }
 }
