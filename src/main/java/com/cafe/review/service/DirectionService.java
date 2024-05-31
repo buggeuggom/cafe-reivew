@@ -27,6 +27,18 @@ public class DirectionService {
     private final DirectionRepository directionRepository;
     private final KakaoCategorySearchService kakaoCategorySearchService;
 
+    @Transactional(readOnly = true)
+    public List<DirectionDto> searchDirectionList(String address) {
+        //TODO: 카페 신규 계업 및 폐업?
+
+        return directionRepository.findAllByInputAddress(address)
+                .map(direction ->
+                        direction.stream()
+                                .map(DirectionDto::fromEntity)
+                                .collect(Collectors.toList()))
+                .orElse(Collections.emptyList());
+    }
+
     @Transactional
     public List<DirectionDto> saveAll(List<DirectionDto> directionList) {
 

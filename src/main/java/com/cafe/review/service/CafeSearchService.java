@@ -12,12 +12,23 @@ import java.util.Objects;
 
 @Service
 @RequiredArgsConstructor
-public class CafeService {
+public class CafeSearchService {
 
     private final KakaoAddressSearchService kakaoAddressSearchService;
     private final DirectionService directionService;
 
-    public List<DirectionDto> buildNearbyStoreList(String address) {
+    public List<DirectionDto> searchNearbyStoreList(String address) {
+
+        List<DirectionDto> searchedDirectionDtoList = directionService.searchDirectionList(address);
+
+        if (CollectionUtils.isEmpty(searchedDirectionDtoList)) {
+            return buildNearbyStoreList(address);
+        }
+
+        return searchedDirectionDtoList;
+    }
+
+    private List<DirectionDto> buildNearbyStoreList(String address) {
 
         var kakaoApiResponseDto = kakaoAddressSearchService.requestAddressSearch(address);
 
@@ -27,9 +38,9 @@ public class CafeService {
 
         var addressDocumentDto = kakaoApiResponseDto.getDocumentList().get(0);
 
-        List<DirectionDto> directions = directionService.buildDirectionList(addressDocumentDto);
+        var directionDtoList = directionService.buildDirectionList(addressDocumentDto);
 
-        return directionService.saveAll(directions);
+        return directionService.saveAll(directionDtoList);
 
     }
 }
