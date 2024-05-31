@@ -14,6 +14,7 @@ import org.springframework.util.CollectionUtils;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -22,7 +23,7 @@ import java.util.stream.Collectors;
 public class DirectionService {
 
     private static final int MAX_SEARCH_COUNT = 10;
-    private static final double RADIUS_KM = 10.0; //반경 10 km
+    private static final double RADIUS_KM = 3.0; //반경 3 km
 
     private final DirectionRepository directionRepository;
     private final KakaoCategorySearchService kakaoCategorySearchService;
@@ -31,12 +32,11 @@ public class DirectionService {
     public List<DirectionDto> searchDirectionList(String address) {
         //TODO: 카페 신규 계업 및 폐업?
 
-        return directionRepository.findAllByInputAddress(address)
-                .map(direction ->
-                        direction.stream()
-                                .map(DirectionDto::fromEntity)
-                                .collect(Collectors.toList()))
+        return directionRepository.findAllByInputAddress(address).map(directions -> directions.stream()
+                        .map(DirectionDto::fromEntity)
+                        .toList())
                 .orElse(Collections.emptyList());
+
     }
 
     @Transactional

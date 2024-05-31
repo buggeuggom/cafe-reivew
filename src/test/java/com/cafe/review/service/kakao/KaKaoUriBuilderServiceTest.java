@@ -16,7 +16,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 class KaKaoUriBuilderServiceTest {
 
     @Autowired
-    private KaKaoUriBuilderService kaKaoUriBuilderService;
+    private KakaoUriBuilderService kaKaoUriBuilderService;
 
 
     @Test

@@ -7,12 +7,12 @@ import org.springframework.boot.test.context.SpringBootTest;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-@DisplayName("비즈니스 로직 - KakaoAddressSearchService")
 @SpringBootTest
+@DisplayName("비즈니스 로직 - KakaoAddressSearchService")
 class KakaoAddressSearchServiceTest {
 
     @Autowired
-    KakaoAddressSearchService kakaoAddressSearchService;
+    private KakaoAddressSearchService kakaoAddressSearchService;
 
     @Test
     @DisplayName("[requestAddressSearch][success]")
