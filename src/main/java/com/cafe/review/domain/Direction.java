@@ -1,9 +1,7 @@
 package com.cafe.review.domain;
 
 import com.cafe.review.dto.DirectionDto;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -13,9 +11,15 @@ import static lombok.AccessLevel.PROTECTED;
 
 @Getter
 @Entity
+@Table(
+        indexes = {
+                @Index(name = "IDX_INPUT_ADDRESS", columnList = "input_address")
+        }
+)
 @NoArgsConstructor(access = PROTECTED)
 public class Direction extends AuditingFields{
     @Id
+    @Column(nullable = false)
     @GeneratedValue(strategy = IDENTITY)
     private Long id;
 
