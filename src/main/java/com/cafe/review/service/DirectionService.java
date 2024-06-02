@@ -72,7 +72,7 @@ public class DirectionService {
                                 .targetUrl(cafeDocumentDto.getPlaceUrl())
                                 .targetRoadAddressName(cafeDocumentDto.getRoadAddressName())
                                 //distance
-                                .distance(cafeDocumentDto.getDistance())
+                                .distance(cafeDocumentDto.getDistance() * 0.001) //km 단위
                                 .build())
                 .filter(direction -> direction.getDistance() <= RADIUS_KM)
                 .limit(MAX_SEARCH_COUNT)
