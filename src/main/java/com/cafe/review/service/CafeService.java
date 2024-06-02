@@ -12,20 +12,25 @@ import java.util.Objects;
 
 @Service
 @RequiredArgsConstructor
-public class CafeSearchService {
+public class CafeService {
 
     private final KakaoAddressSearchService kakaoAddressSearchService;
     private final DirectionService directionService;
 
     public List<DirectionDto> searchNearbyStoreList(String address) {
 
-        List<DirectionDto> searchedDirectionDtoList = directionService.searchDirectionList(address);
+        var searchedDirectionDtoList = directionService.searchDirectionList(address);
 
-        if (CollectionUtils.isEmpty(searchedDirectionDtoList)) {
+        if (isEmptyList(searchedDirectionDtoList)) {
             return buildNearbyStoreList(address);
         }
 
         return searchedDirectionDtoList;
+    }
+
+    private boolean isEmptyList(List<DirectionDto> searchedDirectionDtoList) {
+
+        return CollectionUtils.isEmpty(searchedDirectionDtoList);
     }
 
     private List<DirectionDto> buildNearbyStoreList(String address) {
