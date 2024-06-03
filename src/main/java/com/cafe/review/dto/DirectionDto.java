@@ -38,7 +38,6 @@ public class DirectionDto {
         this.distance = distance;
     }
 
-
     public static DirectionDto fromEntity(Direction entity) {
         return DirectionDto.builder()
                 .id(entity.getId())

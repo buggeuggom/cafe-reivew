@@ -30,7 +30,7 @@ class DirectionServiceTest {
     }
 
     @Test
-    @DisplayName("[requestAddressSearch][success]: 주소가 주워졌을 때")
+    @DisplayName("[searchDirectionListByAddress][success]: 주소가 주워졌을 때")
     void if_address_given_then_directionDtoList (){
         //given
         String address = "경기도 군포시";
@@ -53,7 +53,7 @@ class DirectionServiceTest {
         List<Direction> directions = directionRepository.saveAll(list);
 
         //when
-        var directionDtoList = directionService.searchDirectionList(address);
+        var directionDtoList = directionService.searchDirectionListByAddress(address);
 
         //then
         assertEquals(10, directionDtoList.size());
@@ -61,13 +61,13 @@ class DirectionServiceTest {
     }
 
     @Test
-    @DisplayName("[requestAddressSearch][fail]: 주소가 주워졌으나 저장된 데이터가 없어서 return 빈 리스트")
+    @DisplayName("[searchDirectionListByAddress][fail]: 주소가 주워졌으나 저장된 데이터가 없어서 return 빈 리스트")
     void if_address_given_But_empty_in_db_return_emptyList (){
         //given
         String address = "경기도 군포시";
 
         //when
-        var directionDtoList = directionService.searchDirectionList(address);
+        var directionDtoList = directionService.searchDirectionListByAddress(address);
 
         //then
         assertTrue(directionDtoList.isEmpty());

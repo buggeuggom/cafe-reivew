@@ -1,6 +1,7 @@
 package com.cafe.review.controller;
 
 import com.cafe.review.dto.DirectionDto;
+import com.cafe.review.dto.response.CafeResponse;
 import com.cafe.review.dto.response.DirectionSearchResponse;
 import com.cafe.review.service.CafeService;
 import jakarta.validation.constraints.NotBlank;
@@ -24,5 +25,11 @@ public class CafeController {
         return directionDtoList.stream()
                 .map(DirectionSearchResponse::fromDto)
                 .collect(Collectors.toList());
+    }
+
+    @PostMapping("/{directionId}")
+    public CafeResponse post(Long directionId) {
+
+        return CafeResponse.fromDto(cafeService.register(directionId));
     }
 }

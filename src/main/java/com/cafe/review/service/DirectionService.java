@@ -29,7 +29,14 @@ public class DirectionService {
     private final KakaoCategorySearchService kakaoCategorySearchService;
 
     @Transactional(readOnly = true)
-    public List<DirectionDto> searchDirectionList(String address) {
+    public DirectionDto findDirectionByDirectionId(Long directionId) {
+
+        return DirectionDto.fromEntity(directionRepository.findById(directionId)
+                .orElseThrow(RuntimeException::new)); //TODO: 예외처리
+    }
+
+    @Transactional(readOnly = true)
+    public List<DirectionDto> searchDirectionListByAddress(String address) {
         //TODO: 카페 신규 계업 및 폐업?
 
         return directionRepository.findAllByInputAddress(address).map(directions -> directions.stream()
