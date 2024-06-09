@@ -18,7 +18,7 @@ public class CafeController {
 
     private final CafeService cafeService;
 
-    @GetMapping
+    @GetMapping("/recommendation")
     public List<DirectionSearchResponse> search(@NotBlank String address) {
         List<DirectionDto> directionDtoList = cafeService.searchNearbyStoreList(address);
 
@@ -27,8 +27,8 @@ public class CafeController {
                 .collect(Collectors.toList());
     }
 
-    @PostMapping("/{directionId}")
-    public CafeResponse post(Long directionId) {
+    @PostMapping()
+    public CafeResponse post(@RequestParam Long directionId) {
 
         return CafeResponse.fromDto(cafeService.register(directionId));
     }

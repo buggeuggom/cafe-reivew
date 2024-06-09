@@ -68,8 +68,8 @@ public class CafeService {
             return CafeDto.fromEntity(byStoreNameAndAddress.get());
         }
 
-        return CafeDto.fromEntity(
-                cafeRepository.save(
-                        Cafe.fromDirectionDto(direction)));
+        Cafe saved = cafeRepository.save(Cafe.fromDirectionDto(direction));
+
+        return CafeDto.fromEntity(saved);
     }
 }

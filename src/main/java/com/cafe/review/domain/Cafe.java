@@ -5,6 +5,10 @@ import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import static jakarta.persistence.GenerationType.IDENTITY;
 import static lombok.AccessLevel.PROTECTED;
@@ -12,6 +16,7 @@ import static lombok.AccessLevel.PROTECTED;
 @Getter
 @Entity
 @Table
+@ToString(callSuper = true)
 @NoArgsConstructor(access = PROTECTED)
 public class Cafe extends AuditingFields {
 
@@ -25,6 +30,12 @@ public class Cafe extends AuditingFields {
     private String url;
     private String roadAddressName;
 
+    @ToString.Exclude
+    @OrderBy("createdAt DESC")
+    @OneToMany(mappedBy = "cafe")
+    private final List<Review>  reviews = new ArrayList<>();
+
+
     @Builder
     private Cafe(String storeName, String address, String phone, String url, String roadAddressName) {
         this.storeName = storeName;
@@ -34,7 +45,7 @@ public class Cafe extends AuditingFields {
         this.roadAddressName = roadAddressName;
     }
 
-    public static Cafe fromDirectionDto(DirectionDto directionDto){
+    public static Cafe fromDirectionDto(DirectionDto directionDto) {
         return Cafe.builder()
                 .storeName(directionDto.getTargetStoreName())
                 .address(directionDto.getTargetAddress())
@@ -43,4 +54,5 @@ public class Cafe extends AuditingFields {
                 .roadAddressName(directionDto.getTargetRoadAddressName())
                 .build();
     }
+
 }
