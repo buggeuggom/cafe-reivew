@@ -27,6 +27,8 @@ dependencies {
     annotationProcessor 'org.springframework.boot:spring-boot-configuration-processor'
     compileOnly 'org.projectlombok:lombok'
     annotationProcessor 'org.projectlombok:lombok'
+    //password encoding
+    implementation 'org.springframework.security:spring-security-crypto'
     //DB
     runtimeOnly 'org.mariadb.jdbc:mariadb-java-client'
     //validation
@@ -38,6 +40,8 @@ dependencies {
     annotationProcessor "jakarta.persistence:jakarta.persistence-api"
 
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    testAnnotationProcessor 'org.projectlombok:lombok'
+    testCompileOnly 'org.projectlombok:lombok'
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
 }
 
