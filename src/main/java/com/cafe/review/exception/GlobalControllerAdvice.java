@@ -18,6 +18,7 @@ import static org.springframework.http.HttpStatus.*;
 public class GlobalControllerAdvice {
 
     @ResponseStatus(BAD_REQUEST)
+    @ExceptionHandler(MethodArgumentNotValidException.class)
     public ErrorResponse invalidRequestHandler(MethodArgumentNotValidException e){
         log.error("[에러][MethodArgumentNotValidException] -> {}", e.toString());
 
@@ -36,13 +37,12 @@ public class GlobalControllerAdvice {
     @ExceptionHandler(ReviewException.class)
     public ResponseEntity<ErrorResponse> applicationHandler(ReviewException e) {
         log.error("[에러][ReviewException] -> {}", e.toString());
-
-        int code = SERVER_ERROR.getStatus().value();
+        var code = e.getErrorCode().getStatus().value();
 
         return ResponseEntity.status(code)
                 .body(ErrorResponse.builder()
                         .code(code)
-                        .message(SERVER_ERROR.name())
+                        .message(e.getMessage())
                         .build());
     }
 }
