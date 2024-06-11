@@ -3,6 +3,8 @@ package com.cafe.review.service;
 import com.cafe.review.domain.Direction;
 import com.cafe.review.dto.DirectionDto;
 import com.cafe.review.dto.kakao.AddressDocumentDto;
+import com.cafe.review.exception.ErrorCode;
+import com.cafe.review.exception.ReviewException;
 import com.cafe.review.repository.DirectionRepository;
 import com.cafe.review.service.kakao.KakaoCategorySearchService;
 import lombok.RequiredArgsConstructor;
@@ -16,6 +18,8 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
+
+import static com.cafe.review.exception.ErrorCode.*;
 
 @Slf4j
 @Service
@@ -32,7 +36,7 @@ public class DirectionService {
     public DirectionDto findDirectionByDirectionId(Long directionId) {
 
         return DirectionDto.fromEntity(directionRepository.findById(directionId)
-                .orElseThrow(RuntimeException::new)); //TODO: 예외처리
+                .orElseThrow(()->new ReviewException(DIRECTION_NOT_FOUND)));
     }
 
     @Transactional(readOnly = true)

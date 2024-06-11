@@ -6,6 +6,7 @@ import com.cafe.review.dto.ReviewDto;
 import com.cafe.review.dto.request.review.DeleteReviewRequest;
 import com.cafe.review.dto.request.review.PostReviewRequest;
 import com.cafe.review.dto.request.review.PutReviewRequest;
+import com.cafe.review.exception.ReviewException;
 import com.cafe.review.repository.CafeRepository;
 import com.cafe.review.repository.ReviewRepository;
 import lombok.RequiredArgsConstructor;
@@ -14,6 +15,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+
+import static com.cafe.review.exception.ErrorCode.*;
 
 @Service
 @Transactional
@@ -26,22 +29,19 @@ public class ReviewService {
 
     @Transactional(readOnly = true)
     public List<ReviewDto> getList(Long cafeId) {
-        Cafe cafe = cafeRepository.findById(cafeId).orElseThrow(RuntimeException::new);
+        var cafeEntity = getCafeEntityOrCafeNotFoundException(cafeId);
 
-
-        return reviewRepository.findAllByCafe(cafe).stream()
+        return reviewRepository.findAllByCafe(cafeEntity).stream()
                 .map(ReviewDto::fromEntity)
                 .toList();
     }
 
     public ReviewDto post(Long cafeId, PostReviewRequest request) {
-
-        var cafeEntity = cafeRepository.findById(cafeId).orElseThrow(RuntimeException::new);
+        var cafeEntity = getCafeEntityOrCafeNotFoundException(cafeId);
 
         var reviewEntity = Review.builder()
                 .writerId(request.getWriterId())
                 .password(passwordEncoder.encode(request.getPassword()))
-
                 .title(request.getTitle())
                 .comment(request.getComment())
                 .cafe(cafeEntity)
@@ -54,29 +54,38 @@ public class ReviewService {
     }
 
     public void edit(Long reviewId, PutReviewRequest request) {
-        var reviewEntity = reviewRepository.findById(reviewId).orElseThrow(RuntimeException::new);
-        var rawPassword = request.getPassword();
 
-        if (isWrongPassword(rawPassword, reviewEntity)) {
-            throw new RuntimeException();
-        }
+        var reviewEntity = getReviewOrCafeNotFoundException(reviewId);
+
+        verifyPassword(request.getPassword(), reviewEntity.getPassword());
 
         reviewEntity.edit(request);
     }
 
     public void delete(Long reviewId, DeleteReviewRequest request) {
-        var reviewEntity = reviewRepository.findById(reviewId).orElseThrow(RuntimeException::new);
-        var rawPassword = request.getPassword();
 
-        if (isWrongPassword(rawPassword, reviewEntity)) {
-            throw new RuntimeException();
-        }
+        var reviewEntity = getReviewOrCafeNotFoundException(reviewId);
+
+        verifyPassword(request.getPassword(), reviewEntity.getPassword());
 
         reviewRepository.delete(reviewEntity);
     }
 
-
-    private boolean isWrongPassword(String rawPassword, Review reviewEntity) {
-        return !passwordEncoder.matches(rawPassword, reviewEntity.getPassword());
+    private Cafe getCafeEntityOrCafeNotFoundException(Long cafeId) {
+        return cafeRepository.findById(cafeId).orElseThrow(() ->
+                new ReviewException(CAFE_NOT_FOUND, String.format("%s 아이디의 카페가 없습니다.", cafeId)));
     }
+
+    private Review getReviewOrCafeNotFoundException(Long reviewId) {
+        return reviewRepository.findById(reviewId).orElseThrow(() ->
+                new ReviewException(REVIEW_NOT_FOUND, String.format("%s 아이디의 리뷰가 없습니다.", reviewId)));
+    }
+
+    private void verifyPassword(String rawPassword, String encodedPassword) {
+        if (!passwordEncoder.matches(rawPassword, encodedPassword)) {
+            throw new ReviewException(INVALID_PASSWORD);
+        }
+    }
+
+
 }

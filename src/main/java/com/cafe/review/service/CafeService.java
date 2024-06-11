@@ -3,7 +3,6 @@ package com.cafe.review.service;
 import com.cafe.review.domain.Cafe;
 import com.cafe.review.dto.CafeDto;
 import com.cafe.review.dto.DirectionDto;
-import com.cafe.review.dto.request.ReviewRequest;
 import com.cafe.review.repository.CafeRepository;
 import com.cafe.review.service.kakao.KakaoAddressSearchService;
 import lombok.RequiredArgsConstructor;
