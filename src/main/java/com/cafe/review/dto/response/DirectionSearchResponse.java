@@ -32,7 +32,7 @@ public class DirectionSearchResponse {
                 dto.getTargetPhone(),
                 dto.getTargetUrl(),
                 dto.getTargetRoadAddressName(),
-                dto.getDistance()
+                (double) Math.round(dto.getDistance() * 100) / 100
         );
     }
 }

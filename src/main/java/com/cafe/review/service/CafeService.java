@@ -25,36 +25,23 @@ public class CafeService {
 
     public List<DirectionDto> searchNearbyStoreList(String address) {
 
-        var searchedDirectionDtoList = directionService.searchDirectionListByAddress(address);
+        var kakaoApiResponseDto = kakaoAddressSearchService.requestAddressSearch(address);
+        if (Objects.isNull(kakaoApiResponseDto) || CollectionUtils.isEmpty(kakaoApiResponseDto.getDocumentList())) {
+            return Collections.emptyList(); //TODO: 예외 처리 고민 중
+        }
+        var addressDocumentDto = kakaoApiResponseDto.getDocumentList().get(0);
 
-        if (isEmptyList(searchedDirectionDtoList)) {
-            return buildNearbyStoreList(address);
+        String modifiedAddress = addressDocumentDto.getAddressName();
+        var searchedDirectionDtoList = directionService.searchDirectionListByAddress(modifiedAddress);
+
+        if (CollectionUtils.isEmpty(searchedDirectionDtoList)) {
+            var directionDtoList = directionService.buildDirectionList(addressDocumentDto);
+
+            return directionService.saveAll(directionDtoList);
         }
 
         return searchedDirectionDtoList;
     }
-
-    private boolean isEmptyList(List<DirectionDto> searchedDirectionDtoList) {
-
-        return CollectionUtils.isEmpty(searchedDirectionDtoList);
-    }
-
-    private List<DirectionDto> buildNearbyStoreList(String address) {
-
-        var kakaoApiResponseDto = kakaoAddressSearchService.requestAddressSearch(address);
-
-        if (Objects.isNull(kakaoApiResponseDto) || CollectionUtils.isEmpty(kakaoApiResponseDto.getDocumentList())) {
-            return Collections.emptyList(); //TODO: 예외 처리 고민 중
-        }
-
-        var addressDocumentDto = kakaoApiResponseDto.getDocumentList().get(0);
-
-        var directionDtoList = directionService.buildDirectionList(addressDocumentDto);
-
-        return directionService.saveAll(directionDtoList);
-
-    }
-
 
     public CafeDto register(Long directionId) {
         DirectionDto direction = directionService.findDirectionByDirectionId(directionId);

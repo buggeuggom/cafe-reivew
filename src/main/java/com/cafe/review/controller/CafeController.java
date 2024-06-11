@@ -18,8 +18,8 @@ public class CafeController {
 
     private final CafeService cafeService;
 
-    @GetMapping("/recommendation")
-    public List<DirectionSearchResponse> search(@NotBlank String address) {
+    @GetMapping("")
+    public List<DirectionSearchResponse> search(String address) {
         List<DirectionDto> directionDtoList = cafeService.searchNearbyStoreList(address);
 
         return directionDtoList.stream()

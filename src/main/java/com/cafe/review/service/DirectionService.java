@@ -39,10 +39,9 @@ public class DirectionService {
     public List<DirectionDto> searchDirectionListByAddress(String address) {
         //TODO: 카페 신규 계업 및 폐업?
 
-        return directionRepository.findAllByInputAddress(address).map(directions -> directions.stream()
-                        .map(DirectionDto::fromEntity)
-                        .toList())
-                .orElse(Collections.emptyList());
+         return directionRepository.findAllByInputAddress(address).stream()
+                .map(DirectionDto::fromEntity)
+                .collect(Collectors.toList());
 
     }
 
