@@ -2,6 +2,7 @@
 
 import {ref} from "vue";
 import axios from "axios";
+import router from "@/router";
 
 const address = ref("");
 const recommendations = ref(Array(10).fill({
@@ -34,6 +35,7 @@ const search = function () {
           }
       )
 }
+
 </script>
 
 <template>
@@ -59,7 +61,7 @@ const search = function () {
     <tbody>
     <tr v-for="recommendation in recommendations" :key="recommendation.id">
       <td>
-        <router-link :to="{ name: 'review', params: { cafeId: recommendation.id } }">
+        <router-link :to="{ name: 'review', params: {cafeId: recommendation.id}}">
           {{ recommendation.targetStoreName || "-" }}
         </router-link>
       </td>

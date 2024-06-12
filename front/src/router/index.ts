@@ -19,7 +19,8 @@ const router = createRouter({
     {
       path: '/cafes/:cafeId',
       name: 'review',
-      component: ReviewView
+      component: ReviewView,
+      props: true
     },
   ]
 })
