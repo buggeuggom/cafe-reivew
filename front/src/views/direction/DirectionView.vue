@@ -5,7 +5,7 @@ import axios from "axios";
 import router from "@/router";
 
 const props = defineProps({
-  cafeId: {
+  directionId: {
     type: [Number, String],
     required: true,
   }
@@ -21,12 +21,13 @@ const distance = ref(
       targetRoadAddressName: ""
     })
 onMounted(() => {
-  axios.get(`/myapi/cafes/${props.cafeId}`).then(res => {
+  axios.get(`/myapi/directions/${props.directionId}`).then(res => {
     distance.value = res.data;
   });
 });
 
 const postReview = ref({
+  directionId: props.directionId,
   writerId: "",
   password: "",
   title: "",
@@ -37,7 +38,7 @@ const postReview = ref({
 });
 
 const post = () => {
-  axios.patch(`/myapi/cafes/${distance.value.id}`, postReview.value).then(() => {
+  axios.post(`/myapi/reviews`, postReview.value).then(() => {
     router.replace({ name: "home" });
   });
 };
@@ -71,26 +72,42 @@ const post = () => {
     </el-descriptions-item>
   </el-descriptions>
   <br/>
-  <el-descriptions class="mt-1" title="카페 리뷰" :column="3" border>
-    <el-descriptions-item label="맛" label-align="right" align="center">
-      <el-rate v-model="postReview.tasteRating"/>
-    </el-descriptions-item>
-    <el-descriptions-item label="분위기" label-align="right" align="center">
-      <el-rate v-model="postReview.ambienceRating"/>
-    </el-descriptions-item>
-    <el-descriptions-item label="서비스" label-align="right" align="center">
-      <el-rate v-model="postReview.serviceRating"/>
-    </el-descriptions-item>
-  </el-descriptions>
-  <div class="m-2">
-    <p>제목</p>
-    <el-input v-model="postReview.title" placeholder="제목을 입력해주세요"/>
 
-    <p>내용</p>
-    <el-input v-model="postReview.comment" type="textarea" rows="5"/>
-  </div>
+  <el-form ref="formRef" style="max-width: 80%" :model="postReview" label-width="auto" class="demo-dynamic">
+    <el-form-item label="아이디">
+      <el-input v-model="postReview.writerId" placeholder="아이디는 영문과 숫자로 5~15자로만 가능합니다."/>
+    </el-form-item>
+
+    <el-form-item label="비밀번호">
+      <el-input v-model="postReview.password" placeholder="비밀번호는 영문과 숫자로 10~20자로만 가능합니다."/>
+    </el-form-item>
+
+    <el-form-item label="평가" class="m-auto">
+      <el-descriptions>
+        <el-descriptions-item label="맛" label-align="right" align="center">
+          <el-rate v-model="postReview.tasteRating"/>
+        </el-descriptions-item>
+        <el-descriptions-item label="분위기" label-align="right" align="center">
+          <el-rate v-model="postReview.ambienceRating"/>
+        </el-descriptions-item>
+        <el-descriptions-item label="서비스" label-align="right" align="center">
+          <el-rate v-model="postReview.serviceRating"/>
+        </el-descriptions-item>
+      </el-descriptions>
+    </el-form-item>
+
+    <el-form-item label="제목">
+      <el-input v-model="postReview.title" placeholder="제목을 입력해주세요"/>
+    </el-form-item>
+
+    <el-form-item label="코멘트">
+      <el-input v-model="postReview.comment" type="textarea" rows="5"/>
+    </el-form-item>
+
+  </el-form>
+
   <div class="mt-2 d-flex justify-content-end">
-    <el-button type="primary" @click="post()">수정완료</el-button>
+    <el-button type="primary" @click="post()">작성완료</el-button>
   </div>
 </template>
 

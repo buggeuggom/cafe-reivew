@@ -16,7 +16,7 @@ const recommendations = ref(Array(10).fill({
 const search = function () {
   const queryParam = {address: address.value}
 
-  axios.get(`/myapi/cafes`, {params: queryParam})
+  axios.get(`/myapi/directions`, {params: queryParam})
       .then(response => {
             recommendations.value = []
             if (response.data.length == 0) {
@@ -61,7 +61,7 @@ const search = function () {
     <tbody>
     <tr v-for="recommendation in recommendations" :key="recommendation.id">
       <td>
-        <router-link :to="{ name: 'review', params: {cafeId: recommendation.id}}">
+        <router-link :to="{ name: 'direction', params: {directionId: recommendation.id}}">
           {{ recommendation.targetStoreName || "-" }}
         </router-link>
       </td>
