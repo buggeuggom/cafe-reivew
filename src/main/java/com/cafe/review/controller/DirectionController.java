@@ -1,10 +1,10 @@
 package com.cafe.review.controller;
 
 import com.cafe.review.dto.DirectionDto;
-import com.cafe.review.dto.response.CafeResponse;
-import com.cafe.review.dto.response.DirectionSearchResponse;
+import com.cafe.review.dto.response.direction.DirectionSearchResponse;
+import com.cafe.review.dto.response.direction.SpecificDirectionResponse;
 import com.cafe.review.service.CafeService;
-import jakarta.validation.constraints.NotBlank;
+import com.cafe.review.service.DirectionService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
@@ -12,11 +12,12 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @RestController
-@RequestMapping("/api/v1/cafes")
+@RequestMapping("/api/v1/directions")
 @RequiredArgsConstructor
-public class CafeController {
+public class DirectionController {
 
     private final CafeService cafeService;
+    private final DirectionService directionService;
 
     @GetMapping("")
     public List<DirectionSearchResponse> search(String address) {
@@ -27,9 +28,10 @@ public class CafeController {
                 .collect(Collectors.toList());
     }
 
-    @PostMapping()
-    public CafeResponse post(@RequestParam Long directionId) {
+    @GetMapping("/{directionId}")
+    public SpecificDirectionResponse searchSpecific(@PathVariable Long directionId) {
 
-        return CafeResponse.fromDto(cafeService.register(directionId));
+        return SpecificDirectionResponse.fromDto(directionService.findDirectionByDirectionId(directionId));
     }
 }
+
