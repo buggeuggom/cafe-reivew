@@ -25,25 +25,10 @@ public class ReviewController {
     private final CafeService cafeService;
 
     @PostMapping("/reviews")
-    public PostReviewResponse post(@RequestBody @Valid PostReviewRequest request){
+    public PostReviewResponse post(@RequestBody @Valid PostReviewRequest request) {
 
         return PostReviewResponse.fromDto(reviewService.post(request));
     }
-
-    @GetMapping("/reviews")
-    public List<CafeReviewDto> getList(@ModelAttribute CafeSearchRequest request){
-
-        return cafeService.getList(request);
-    }
-
-    @GetMapping("/{cafeId}/reviews")
-    public List<ReviewResponse> getList(@PathVariable Long cafeId) {
-
-        return reviewService.getList(cafeId).stream()
-                .map(ReviewResponse::fromDto)
-                .collect(Collectors.toList());
-    }
-
 
     @PutMapping("/reviews/{reviewId}")
     public void put(@PathVariable Long reviewId, @RequestBody @Valid PutReviewRequest request) {

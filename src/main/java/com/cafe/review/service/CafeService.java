@@ -1,9 +1,13 @@
 package com.cafe.review.service;
 
+import com.cafe.review.domain.Cafe;
+import com.cafe.review.domain.Review;
 import com.cafe.review.dto.CafeDto;
 import com.cafe.review.dto.CafeReviewDto;
 import com.cafe.review.dto.DirectionDto;
 import com.cafe.review.dto.request.CafeSearchRequest;
+import com.cafe.review.exception.ErrorCode;
+import com.cafe.review.exception.ReviewException;
 import com.cafe.review.repository.cafe.CafeRepository;
 import com.cafe.review.service.kakao.KakaoAddressSearchService;
 import lombok.RequiredArgsConstructor;
@@ -19,9 +23,9 @@ import java.util.Objects;
 @RequiredArgsConstructor
 public class CafeService {
 
-    private final KakaoAddressSearchService kakaoAddressSearchService;
-    private final DirectionService directionService;
     private final CafeRepository cafeRepository;
+    private final DirectionService directionService;
+    private final KakaoAddressSearchService kakaoAddressSearchService;
 
     public List<DirectionDto> searchNearbyStoreList(String address) {
 
@@ -43,9 +47,14 @@ public class CafeService {
         return searchedDirectionDtoList;
     }
 
-
     @Transactional(readOnly = true)
     public List<CafeReviewDto> getList(CafeSearchRequest request) {
         return cafeRepository.findCafeWithReviewCountAndAverage(request);
+    }
+
+    @Transactional(readOnly = true)
+    public CafeDto getCafe(Long cafeId) {
+        Cafe cafe = cafeRepository.findById(cafeId).orElseThrow(() -> new ReviewException(ErrorCode.CAFE_NOT_FOUND));
+        return  CafeDto.fromEntity(cafe);
     }
 }

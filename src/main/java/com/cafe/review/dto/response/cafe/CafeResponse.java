@@ -1,7 +1,6 @@
-package com.cafe.review.dto.response;
+package com.cafe.review.dto.response.cafe;
 
 import com.cafe.review.dto.CafeDto;
-import lombok.Builder;
 import lombok.Getter;
 
 @Getter
@@ -14,6 +13,7 @@ public class CafeResponse {
     private String phone;
     private String url;
     private String roadAddressName;
+
 
     private CafeResponse(Long id, String storeName, String address, String phone, String url, String roadAddressName) {
         this.id = id;

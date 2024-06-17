@@ -9,10 +9,13 @@ import com.cafe.review.repository.DirectionRepository;
 import com.cafe.review.service.kakao.KakaoCategorySearchService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.scheduling.annotation.Async;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 
+import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
@@ -59,6 +62,13 @@ public class DirectionService {
         return entityList.stream()
                 .map(DirectionDto::fromEntity)
                 .collect(Collectors.toList());
+    }
+
+
+    @Transactional
+    @Scheduled(cron = "0 0 0 * *") //매월 00시 00분 00초
+    public void autoDelete() {
+        directionRepository.deleteByCreatedAtLessThanEqual(LocalDateTime.now().minusMonths(1));
     }
 
     public List<DirectionDto> buildDirectionList(AddressDocumentDto inputDto) {

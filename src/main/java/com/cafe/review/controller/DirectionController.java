@@ -19,7 +19,7 @@ public class DirectionController {
     private final CafeService cafeService;
     private final DirectionService directionService;
 
-    @GetMapping("")
+    @GetMapping()
     public List<DirectionSearchResponse> search(String address) {
         List<DirectionDto> directionDtoList = cafeService.searchNearbyStoreList(address);
 
