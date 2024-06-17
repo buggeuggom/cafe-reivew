@@ -11,7 +11,7 @@ const cafeSearchRequest = ref({
     }
 )
 
-const reviews = ref(
+const cafes = ref(
     Array(10).fill({
       id: 0,
       storeName: "",
@@ -21,9 +21,9 @@ const reviews = ref(
     })
 );
 const search = () => {
-  axios.get(`/myapi/reviews`, {params: cafeSearchRequest.value}).then(response => {
-    reviews.value = []
-    response.data.forEach((r: any) => {reviews.value.push(r)})
+  axios.get(`/myapi/cafes`, {params: cafeSearchRequest.value}).then(response => {
+    cafes.value = []
+    response.data.forEach((r: any) => {cafes.value.push(r)})
   })
 }
 onMounted(() => {
@@ -57,17 +57,17 @@ onMounted(() => {
     </thead>
 
     <tbody>
-    <tr v-for="review in reviews" :key="review.id">
+    <tr v-for="cafe in cafes" :key="cafe.id">
       <td>
-        <router-link :to="{ name: 'review', params: {cafeId: review.id}, props:{averageScore: review.averageScore}}">
-          {{ review.storeName || "-" }}
+        <router-link :to="{ name: 'review', params: {cafeId: cafe.id}, props:{averageScore: cafe.averageScore}}">
+          {{ cafe.storeName || "-" }}
         </router-link>
       </td>
-      <td>{{ review.address || "-" }}</td>
+      <td>{{ cafe.address || "-" }}</td>
       <td>
-        <el-rate v-model="review.averageScore" disabled show-score text-color="#ff9900"/>
+        <el-rate v-model="cafe.averageScore" disabled show-score text-color="#ff9900"/>
       </td>
-      <td>{{ review.reviewCount || "-" }}</td>
+      <td>{{ cafe.reviewCount || "-" }}</td>
 
     </tr>
     </tbody>

@@ -66,14 +66,15 @@ public class DirectionService {
 
 
     @Transactional
-    @Scheduled(cron = "0 0 0 * *") //매월 00시 00분 00초
+    @Scheduled(cron = "0 0 1 1 * *") //매월 1일 1시
     public void autoDelete() {
         directionRepository.deleteByCreatedAtLessThanEqual(LocalDateTime.now().minusMonths(1));
     }
 
+
     public List<DirectionDto> buildDirectionList(AddressDocumentDto inputDto) {
 
-        if (Objects.isNull(inputDto)) return Collections.emptyList(); //TODO: 예외 처리 할지 고민 중
+        if (Objects.isNull(inputDto)) return Collections.emptyList();
 
         return kakaoCategorySearchService.requestStoreCategorySearch(inputDto.getLatitude(), inputDto.getLongitude(), RADIUS_KM)
                 .getDocumentList()

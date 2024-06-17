@@ -31,6 +31,8 @@ const search = function () {
                 targetPhone: " ",
                 targetRoadAddressName: " "
               })
+
+              alert("도로명 주소 방식으로 입력해주세요/")
             }
 
             response.data.forEach((r: any) => {

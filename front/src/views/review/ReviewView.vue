@@ -34,7 +34,7 @@ onMounted(() => {
     cafe.value = res.data;
   });
 
-  axios.get(`/myapi/${props.cafeId}/reviews`).then(res => {
+  axios.get(`/myapi/cafes/${props.cafeId}/reviews`).then(res => {
     reviews.value = []
     reviews.value = res.data;
   });
