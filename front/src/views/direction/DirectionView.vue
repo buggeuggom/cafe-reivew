@@ -39,7 +39,7 @@ const postReview = ref({
 
 const post = () => {
   axios.post(`/myapi/reviews`, postReview.value).then(() => {
-    router.replace({ name: "home" });
+    router.replace({ name: "reviews" });
   });
 };
 </script>

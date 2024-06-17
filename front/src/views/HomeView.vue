@@ -3,6 +3,8 @@
 
 <template>
   <main>
+    http method
+    post
 
   </main>
 </template>

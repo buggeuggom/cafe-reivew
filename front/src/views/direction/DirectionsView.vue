@@ -14,8 +14,12 @@ const recommendations = ref(Array(10).fill({
 }));
 
 const search = function () {
-  const queryParam = {address: address.value}
 
+  if (address.value.trim() == "") {
+    alert("주소를 입력하세요.")
+    return
+  }
+  const queryParam = {address: address.value}
   axios.get(`/myapi/directions`, {params: queryParam})
       .then(response => {
             recommendations.value = []
