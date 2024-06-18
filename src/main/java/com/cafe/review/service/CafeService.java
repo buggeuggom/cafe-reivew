@@ -1,74 +1,60 @@
 package com.cafe.review.service;
 
 import com.cafe.review.domain.Cafe;
+import com.cafe.review.domain.Review;
 import com.cafe.review.dto.CafeDto;
+import com.cafe.review.dto.CafeReviewDto;
 import com.cafe.review.dto.DirectionDto;
-import com.cafe.review.repository.CafeRepository;
+import com.cafe.review.dto.request.CafeSearchRequest;
+import com.cafe.review.exception.ErrorCode;
+import com.cafe.review.exception.ReviewException;
+import com.cafe.review.repository.cafe.CafeRepository;
 import com.cafe.review.service.kakao.KakaoAddressSearchService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
 public class CafeService {
 
-    private final KakaoAddressSearchService kakaoAddressSearchService;
-    private final DirectionService directionService;
     private final CafeRepository cafeRepository;
+    private final DirectionService directionService;
+    private final KakaoAddressSearchService kakaoAddressSearchService;
 
     public List<DirectionDto> searchNearbyStoreList(String address) {
 
-        var searchedDirectionDtoList = directionService.searchDirectionListByAddress(address);
+        var kakaoApiResponseDto = kakaoAddressSearchService.requestAddressSearch(address);
+        if (Objects.isNull(kakaoApiResponseDto) || CollectionUtils.isEmpty(kakaoApiResponseDto.getDocumentList())) {
+            return Collections.emptyList();
+        }
+        var addressDocumentDto = kakaoApiResponseDto.getDocumentList().get(0);
 
-        if (isEmptyList(searchedDirectionDtoList)) {
-            return buildNearbyStoreList(address);
+        String modifiedAddress = addressDocumentDto.getAddressName();
+        var searchedDirectionDtoList = directionService.searchDirectionListByAddress(modifiedAddress);
+
+        if (CollectionUtils.isEmpty(searchedDirectionDtoList)) {
+            var directionDtoList = directionService.buildDirectionList(addressDocumentDto);
+
+            return directionService.saveAll(directionDtoList);
         }
 
         return searchedDirectionDtoList;
     }
 
-    private boolean isEmptyList(List<DirectionDto> searchedDirectionDtoList) {
-
-        return CollectionUtils.isEmpty(searchedDirectionDtoList);
+    @Transactional(readOnly = true)
+    public List<CafeReviewDto> getList(CafeSearchRequest request) {
+        return cafeRepository.findCafeWithReviewCountAndAverage(request);
     }
 
-    private List<DirectionDto> buildNearbyStoreList(String address) {
-
-        var kakaoApiResponseDto = kakaoAddressSearchService.requestAddressSearch(address);
-
-        if (Objects.isNull(kakaoApiResponseDto) || CollectionUtils.isEmpty(kakaoApiResponseDto.getDocumentList())) {
-            return Collections.emptyList(); //TODO: 예외 처리 고민 중
-        }
-
-        var addressDocumentDto = kakaoApiResponseDto.getDocumentList().get(0);
-
-        var directionDtoList = directionService.buildDirectionList(addressDocumentDto);
-
-        return directionService.saveAll(directionDtoList);
-
-    }
-
-
-    public CafeDto register(Long directionId) {
-        DirectionDto direction = directionService.findDirectionByDirectionId(directionId);
-
-        Optional<Cafe> byStoreNameAndAddress = cafeRepository.findByStoreNameAndAddress(
-                direction.getTargetStoreName(),
-                direction.getTargetAddress()
-        );
-
-        if (byStoreNameAndAddress.isPresent()) {
-            return CafeDto.fromEntity(byStoreNameAndAddress.get());
-        }
-
-        Cafe saved = cafeRepository.save(Cafe.fromDirectionDto(direction));
-
-        return CafeDto.fromEntity(saved);
+    @Transactional(readOnly = true)
+    public CafeDto getCafe(Long cafeId) {
+        Cafe cafe = cafeRepository.findById(cafeId).orElseThrow(() -> new ReviewException(ErrorCode.CAFE_NOT_FOUND));
+        return  CafeDto.fromEntity(cafe);
     }
 }

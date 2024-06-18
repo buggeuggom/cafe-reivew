@@ -1,10 +1,11 @@
 package com.cafe.review.controller;
 
-import com.cafe.review.dto.DirectionDto;
-import com.cafe.review.dto.response.CafeResponse;
-import com.cafe.review.dto.response.DirectionSearchResponse;
+import com.cafe.review.dto.CafeReviewDto;
+import com.cafe.review.dto.request.CafeSearchRequest;
+import com.cafe.review.dto.response.cafe.CafeResponse;
+import com.cafe.review.dto.response.review.ReviewResponse;
 import com.cafe.review.service.CafeService;
-import jakarta.validation.constraints.NotBlank;
+import com.cafe.review.service.ReviewService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
@@ -17,19 +18,24 @@ import java.util.stream.Collectors;
 public class CafeController {
 
     private final CafeService cafeService;
+    private final ReviewService reviewService;
 
-    @GetMapping("/recommendation")
-    public List<DirectionSearchResponse> search(@NotBlank String address) {
-        List<DirectionDto> directionDtoList = cafeService.searchNearbyStoreList(address);
+    @GetMapping()
+    public List<CafeReviewDto> getList(@ModelAttribute CafeSearchRequest request) {
+        return cafeService.getList(request);
+    }
 
-        return directionDtoList.stream()
-                .map(DirectionSearchResponse::fromDto)
+    @GetMapping("/{cafeId}")
+    public CafeResponse get(@PathVariable Long cafeId) {
+        return CafeResponse.fromDto(cafeService.getCafe(cafeId));
+    }
+
+    @GetMapping("/{cafeId}/reviews")
+    public List<ReviewResponse> getList(@PathVariable Long cafeId) {
+
+        return reviewService.getList(cafeId).stream()
+                .map(ReviewResponse::fromDto)
                 .collect(Collectors.toList());
     }
 
-    @PostMapping()
-    public CafeResponse post(@RequestParam Long directionId) {
-
-        return CafeResponse.fromDto(cafeService.register(directionId));
-    }
 }

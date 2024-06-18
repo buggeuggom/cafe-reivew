@@ -40,7 +40,6 @@ class DirectionServiceTest {
                         .distance(10.0 + (double) i / 10)
                         .inputLatitude(10.0)
                         .inputLongitude(10.0)
-                        .id((long) i)
                         .inputAddress(address)
                         .inputLongitude(11.1)
                         .inputLatitude(11.1)

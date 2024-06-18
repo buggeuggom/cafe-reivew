@@ -9,10 +9,13 @@ import com.cafe.review.repository.DirectionRepository;
 import com.cafe.review.service.kakao.KakaoCategorySearchService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.scheduling.annotation.Async;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 
+import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
@@ -41,13 +44,10 @@ public class DirectionService {
 
     @Transactional(readOnly = true)
     public List<DirectionDto> searchDirectionListByAddress(String address) {
-        //TODO: 카페 신규 계업 및 폐업?
 
-        return directionRepository.findAllByInputAddress(address).map(directions -> directions.stream()
-                        .map(DirectionDto::fromEntity)
-                        .toList())
-                .orElse(Collections.emptyList());
-
+         return directionRepository.findAllByInputAddress(address).stream()
+                .map(DirectionDto::fromEntity)
+                .collect(Collectors.toList());
     }
 
     @Transactional
@@ -64,9 +64,17 @@ public class DirectionService {
                 .collect(Collectors.toList());
     }
 
+
+    @Transactional
+    @Scheduled(cron = "0 0 1 1 * *") //매월 1일 1시
+    public void autoDelete() {
+        directionRepository.deleteByCreatedAtLessThanEqual(LocalDateTime.now().minusMonths(1));
+    }
+
+
     public List<DirectionDto> buildDirectionList(AddressDocumentDto inputDto) {
 
-        if (Objects.isNull(inputDto)) return Collections.emptyList(); //TODO: 예외 처리 할지 고민 중
+        if (Objects.isNull(inputDto)) return Collections.emptyList();
 
         return kakaoCategorySearchService.requestStoreCategorySearch(inputDto.getLatitude(), inputDto.getLongitude(), RADIUS_KM)
                 .getDocumentList()

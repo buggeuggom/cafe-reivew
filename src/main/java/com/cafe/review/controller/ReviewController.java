@@ -1,10 +1,13 @@
 package com.cafe.review.controller;
 
+import com.cafe.review.dto.CafeReviewDto;
+import com.cafe.review.dto.request.CafeSearchRequest;
 import com.cafe.review.dto.request.review.DeleteReviewRequest;
 import com.cafe.review.dto.request.review.PostReviewRequest;
 import com.cafe.review.dto.request.review.PutReviewRequest;
 import com.cafe.review.dto.response.review.ReviewResponse;
 import com.cafe.review.dto.response.review.PostReviewResponse;
+import com.cafe.review.service.CafeService;
 import com.cafe.review.service.ReviewService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -19,25 +22,17 @@ import java.util.stream.Collectors;
 public class ReviewController {
 
     private final ReviewService reviewService;
+    private final CafeService cafeService;
 
-    @GetMapping("/{cafeId}/reviews")
-    public List<ReviewResponse> getList(@PathVariable Long cafeId) {
+    @PostMapping("/reviews")
+    public PostReviewResponse post(@RequestBody @Valid PostReviewRequest request) {
 
-        return reviewService.getList(cafeId).stream()
-                .map(ReviewResponse::fromDto)
-                .collect(Collectors.toList());
-    }
-
-    @PostMapping("/{cafeId}/reviews")
-    public PostReviewResponse post(@PathVariable Long cafeId, @RequestBody @Valid PostReviewRequest request) {
-
-        return PostReviewResponse.fromDto(reviewService.post(cafeId, request));
+        return PostReviewResponse.fromDto(reviewService.post(request));
     }
 
     @PutMapping("/reviews/{reviewId}")
     public void put(@PathVariable Long reviewId, @RequestBody @Valid PutReviewRequest request) {
         reviewService.edit(reviewId, request);
-
     }
 
     @PostMapping("/reviews/{reviewId}/delete")

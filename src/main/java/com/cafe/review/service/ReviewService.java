@@ -2,12 +2,13 @@ package com.cafe.review.service;
 
 import com.cafe.review.domain.Cafe;
 import com.cafe.review.domain.Review;
+import com.cafe.review.dto.DirectionDto;
 import com.cafe.review.dto.ReviewDto;
 import com.cafe.review.dto.request.review.DeleteReviewRequest;
 import com.cafe.review.dto.request.review.PostReviewRequest;
 import com.cafe.review.dto.request.review.PutReviewRequest;
 import com.cafe.review.exception.ReviewException;
-import com.cafe.review.repository.CafeRepository;
+import com.cafe.review.repository.cafe.CafeRepository;
 import com.cafe.review.repository.ReviewRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -26,6 +27,7 @@ public class ReviewService {
     private final ReviewRepository reviewRepository;
     private final CafeRepository cafeRepository;
     private final PasswordEncoder passwordEncoder;
+    private final DirectionService directionService;
 
     @Transactional(readOnly = true)
     public List<ReviewDto> getList(Long cafeId) {
@@ -36,8 +38,13 @@ public class ReviewService {
                 .toList();
     }
 
-    public ReviewDto post(Long cafeId, PostReviewRequest request) {
-        var cafeEntity = getCafeEntityOrCafeNotFoundException(cafeId);
+    @Transactional
+    public ReviewDto post(PostReviewRequest request) {
+        DirectionDto directionDto = directionService.findDirectionByDirectionId(request.getDirectionId());
+        List<Cafe> cafeList = cafeRepository.findAllByStoreNameAndAddressOrderByCreatedAtDesc(
+                        directionDto.getTargetStoreName(),
+                        directionDto.getTargetAddress());
+        Cafe cafeEntity = (cafeList.isEmpty()) ? cafeRepository.save(Cafe.fromDirectionDto(directionDto)) : cafeList.get(0);
 
         var reviewEntity = Review.builder()
                 .writerId(request.getWriterId())
@@ -52,6 +59,7 @@ public class ReviewService {
 
         return ReviewDto.fromEntity(reviewRepository.save(reviewEntity));
     }
+
 
     public void edit(Long reviewId, PutReviewRequest request) {
 

@@ -38,8 +38,7 @@ public class Direction extends AuditingFields{
     private double distance;
 
     @Builder
-    private Direction(Long id, String inputAddress, double inputLatitude, double inputLongitude, String targetStoreName, String targetAddress, String targetPhone, String targetUrl, String targetRoadAddressName, double distance) {
-        this.id = id;
+    private Direction(String inputAddress, double inputLatitude, double inputLongitude, String targetStoreName, String targetAddress, String targetPhone, String targetUrl, String targetRoadAddressName, double distance) {
         this.inputAddress = inputAddress;
         this.inputLatitude = inputLatitude;
         this.inputLongitude = inputLongitude;

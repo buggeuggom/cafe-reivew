@@ -20,11 +20,11 @@ public class PutReviewRequest {
     private String title;
     @NotBlank(message = "코멘트는 빈칸일 수 없습니다.")
     private String comment;
-    @Range(min = 0, max = 5, message = "맛 평가는 1 ~ 5의 숫자만 가능합니다.")
+    @Range(min = 0, max = 5, message = "맛 평가는 0 ~ 5의 숫자만 가능합니다.")
     private Integer tasteRating;
-    @Range(min = 0, max = 5, message = "분위기 평가는 1 ~ 5의 숫자만 가능합니다.")
+    @Range(min = 0, max = 5, message = "분위기 평가는 0 ~ 5의 숫자만 가능합니다.")
     private Integer ambienceRating; //분위기
-    @Range(min = 0, max = 5, message = "서비스 평가는 1 ~ 5의 숫자만 가능합니다.")
+    @Range(min = 0, max = 5, message = "서비스 평가는 0 ~ 5의 숫자만 가능합니다.")
     private Integer serviceRating;
 
     @Builder

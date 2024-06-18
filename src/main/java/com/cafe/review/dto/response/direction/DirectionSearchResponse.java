@@ -1,8 +1,7 @@
-package com.cafe.review.dto.response;
+package com.cafe.review.dto.response.direction;
 
 import com.cafe.review.dto.DirectionDto;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 
 @Getter
 public class DirectionSearchResponse {
@@ -11,16 +10,14 @@ public class DirectionSearchResponse {
     //목적지
     private String targetStoreName;
     private String targetPhone;
-    private String targetUrl;
     private String targetRoadAddressName;
 
     private double distance;
 
-    private DirectionSearchResponse(Long id, String targetStoreName, String targetPhone, String targetUrl, String targetRoadAddressName, double distance) {
+    private DirectionSearchResponse(Long id, String targetStoreName, String targetPhone, String targetRoadAddressName, double distance) {
         this.id = id;
         this.targetStoreName = targetStoreName;
         this.targetPhone = targetPhone;
-        this.targetUrl = targetUrl;
         this.targetRoadAddressName = targetRoadAddressName;
         this.distance = distance;
     }
@@ -30,9 +27,8 @@ public class DirectionSearchResponse {
                 dto.getId(),
                 dto.getTargetStoreName(),
                 dto.getTargetPhone(),
-                dto.getTargetUrl(),
                 dto.getTargetRoadAddressName(),
-                dto.getDistance()
+                (double) Math.round(dto.getDistance() * 100) / 100
         );
     }
 }

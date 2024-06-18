@@ -1,6 +1,7 @@
 package com.cafe.review.service;
 
 import com.cafe.review.domain.Direction;
+import com.cafe.review.dto.CafeDto;
 import com.cafe.review.repository.DirectionRepository;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -38,7 +39,6 @@ class CafeServiceTest {
                         .distance(10.0 + (double) i / 10)
                         .inputLatitude(10.0)
                         .inputLongitude(10.0)
-                        .id((long) i)
                         .inputAddress(address)
                         .inputLongitude(11.1)
                         .inputLatitude(11.1)
@@ -72,7 +72,16 @@ class CafeServiceTest {
         assertEquals(result.size(), repositoryAll.size());
         assertEquals(result.get(0).getInputAddress(), repositoryAll.get(0).getInputAddress());
         assertEquals(result.get(0).getTargetStoreName(), repositoryAll.get(0).getTargetStoreName());
+    }
 
+    @Test
+    @DisplayName("asd")
+    void test (){
+        //given
+        CafeDto cafe = cafeService.getCafe(1L);
+        //when
+
+        //then
 
     }
 }

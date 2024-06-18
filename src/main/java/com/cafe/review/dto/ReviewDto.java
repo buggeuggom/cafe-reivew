@@ -4,6 +4,8 @@ import com.cafe.review.domain.Review;
 import lombok.Builder;
 import lombok.Getter;
 
+import java.time.LocalDateTime;
+
 @Getter
 public class ReviewDto {
 
@@ -18,9 +20,9 @@ public class ReviewDto {
     private Integer tasteRating;
     private Integer ambienceRating; //분위기
     private Integer serviceRating;
+    private LocalDateTime createdAt;
 
-
-    public ReviewDto(Long id, String writerId, String password, String title, String comment, CafeDto cafeDto, Integer tasteRating, Integer ambienceRating, Integer serviceRating) {
+    private ReviewDto(Long id, String writerId, String password, String title, String comment, CafeDto cafeDto, Integer tasteRating, Integer ambienceRating, Integer serviceRating, LocalDateTime createdAt) {
         this.id = id;
         this.writerId = writerId;
         this.password = password;
@@ -30,6 +32,7 @@ public class ReviewDto {
         this.tasteRating = tasteRating;
         this.ambienceRating = ambienceRating;
         this.serviceRating = serviceRating;
+        this.createdAt = createdAt;
     }
 
     public static ReviewDto fromEntity(Review entity) {
@@ -44,7 +47,9 @@ public class ReviewDto {
                 CafeDto.fromEntity(entity.getCafe()),
                 entity.getTasteRating(),
                 entity.getAmbienceRating(),
-                entity.getServiceRating()
+                entity.getServiceRating(),
+
+                entity.getCreatedAt()
         );
     }
 }

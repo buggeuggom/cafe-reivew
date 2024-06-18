@@ -4,6 +4,8 @@ import com.cafe.review.domain.Cafe;
 import lombok.Builder;
 import lombok.Getter;
 
+import java.util.List;
+
 @Getter
 public class CafeDto {
 
