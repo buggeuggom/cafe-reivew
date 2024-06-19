@@ -18,6 +18,7 @@ import static lombok.AccessLevel.PROTECTED;
 )
 @NoArgsConstructor(access = PROTECTED)
 public class Direction extends AuditingFields{
+
     @Id
     @Column(nullable = false)
     @GeneratedValue(strategy = IDENTITY)

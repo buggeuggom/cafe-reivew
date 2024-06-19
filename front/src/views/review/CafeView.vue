@@ -124,10 +124,6 @@ ul {
         color: #383838;
         text-decoration: none;
       }
-
-      //&:hover {
-      //  text-decoration: underline;
-      //}
     }
 
     .content {

@@ -3,13 +3,11 @@ package com.cafe.review.service;
 import com.cafe.review.domain.Direction;
 import com.cafe.review.dto.DirectionDto;
 import com.cafe.review.dto.kakao.AddressDocumentDto;
-import com.cafe.review.exception.ErrorCode;
 import com.cafe.review.exception.ReviewException;
 import com.cafe.review.repository.DirectionRepository;
 import com.cafe.review.service.kakao.KakaoCategorySearchService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.scheduling.annotation.Async;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -19,7 +17,6 @@ import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 import static com.cafe.review.exception.ErrorCode.*;
@@ -43,7 +40,7 @@ public class DirectionService {
     }
 
     @Transactional(readOnly = true)
-    public List<DirectionDto> searchDirectionListByAddress(String address) {
+    public List<DirectionDto> findDirectionListByAddress(String address) {
 
          return directionRepository.findAllByInputAddress(address).stream()
                 .map(DirectionDto::fromEntity)

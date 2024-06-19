@@ -1,6 +1,7 @@
 package com.cafe.review.controller;
 
 import com.cafe.review.dto.DirectionDto;
+import com.cafe.review.exception.ErrorCode;
 import com.cafe.review.repository.DirectionRepository;
 import com.cafe.review.service.CafeService;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -14,6 +15,7 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import java.util.List;
 
+import static com.cafe.review.exception.ErrorCode.*;
 import static org.springframework.http.MediaType.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
@@ -25,8 +27,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @DisplayName("api 컨트롤러 - DirectionControllerTest")
 class DirectionControllerTest {
 
-    @Autowired
-    private ObjectMapper objectMapper;
     @Autowired
     private MockMvc mockMvc;
     @Autowired
@@ -66,6 +66,21 @@ class DirectionControllerTest {
                         .contentType(APPLICATION_JSON)
                         )
                 .andExpect(status().isOk())
+                .andDo(print());
+    }
+
+    @Test
+    @DisplayName("[searchSpecific][fail]: DIRECTION_NOT_FOUND")
+    void searchSpecificFailWrongId() throws Exception {
+        //given
+        String address = "경기도 군포시";
+        List<DirectionDto> directionDtoList = cafeService.searchNearbyStoreList(address);
+
+        //expected
+        mockMvc.perform(get("/api/v1/directions/{directionId}", directionDtoList.get(0).getId() + 11)
+                        .contentType(APPLICATION_JSON)
+                )
+                .andExpect(status().is(DIRECTION_NOT_FOUND.getStatus().value()))
                 .andDo(print());
     }
 }

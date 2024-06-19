@@ -17,7 +17,7 @@ public class PostReviewRequest {
 
     @Pattern(regexp = "^[A-Za-z[0-9]]{5,15}$", message = "아이디는 영문과 숫자로 5~15자로만 가능합니다.")
     private String writerId;
-    @Pattern(regexp = "^[A-Za-z[0-9]]{10,20}$", message = "비밀번호는 영문과 숫자로 10~20자로만 가능합니다.")
+    @Pattern(regexp = "^[A-Za-z[0-9]]{10,20}$", message = "비밀번호는 영문과 숫자로 10~20자만 가능합니다.")
     private String password;
 
     @Length(min = 5, message = "제목은 5자 이상입니다.")

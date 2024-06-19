@@ -1,7 +1,6 @@
 package com.cafe.review.service;
 
 import com.cafe.review.domain.Cafe;
-import com.cafe.review.domain.Review;
 import com.cafe.review.dto.CafeDto;
 import com.cafe.review.dto.CafeReviewDto;
 import com.cafe.review.dto.DirectionDto;
@@ -36,7 +35,7 @@ public class CafeService {
         var addressDocumentDto = kakaoApiResponseDto.getDocumentList().get(0);
 
         String modifiedAddress = addressDocumentDto.getAddressName();
-        var searchedDirectionDtoList = directionService.searchDirectionListByAddress(modifiedAddress);
+        var searchedDirectionDtoList = directionService.findDirectionListByAddress(modifiedAddress);
 
         if (CollectionUtils.isEmpty(searchedDirectionDtoList)) {
             var directionDtoList = directionService.buildDirectionList(addressDocumentDto);

@@ -1,11 +1,15 @@
 package com.cafe.review.service;
 
 import com.cafe.review.domain.Cafe;
+import com.cafe.review.domain.Direction;
 import com.cafe.review.domain.Review;
 import com.cafe.review.dto.ReviewDto;
+import com.cafe.review.dto.request.review.PostReviewRequest;
 import com.cafe.review.exception.ReviewException;
 import com.cafe.review.fixture.CafeFixture;
+import com.cafe.review.fixture.DirectionFixture;
 import com.cafe.review.fixture.ReviewFixture;
+import com.cafe.review.repository.DirectionRepository;
 import com.cafe.review.repository.cafe.CafeRepository;
 import com.cafe.review.repository.ReviewRepository;
 import org.junit.jupiter.api.*;
@@ -31,9 +35,12 @@ class ReviewServiceTest {
     private CafeRepository cafeRepository;
     @Autowired
     private PasswordEncoder passwordEncoder;
+    @Autowired
+    private DirectionRepository directionRepository;
 
     @BeforeEach
     void setup() {
+        directionRepository.deleteAll();
         reviewRepository.deleteAll();
         cafeRepository.deleteAll();
     }
@@ -89,238 +96,27 @@ class ReviewServiceTest {
         assertEquals(String.format("%s 아이디의 카페가 없습니다.", wrongId), e.getMessage());
     }
 
-//    @Test
-//    @DisplayName("[post][success]: 카페 id가 있고 request 가 정상인 경우")
-//    void post_성공_카페id가_있는_경우() {
-//        //given
-//        Cafe cafe = cafeRepository.save(CafeFixture.get(1));
-//
-//        var request = PostReviewRequest.builder()
-//                .writerId("test writer id")
-//                .password("test password")
-//                .title("test title")
-//                .comment("test comment")
-//                .tasteRating(3)
-//                .ambienceRating(3)
-//                .serviceRating(3)
-//                .build();
-//        //when
-//        var reviewDto = reviewService.post(cafe.getId(), request);
-//
-//        //then
-//        assertEquals("test writer id", reviewDto.getWriterId());
-//        assertTrue(passwordEncoder.matches("test password", reviewDto.getPassword()));
-//    }
-//
-//    @Test
-//    @DisplayName("[post][fail]: 카페 id가 잘못 되었고 request 가 정상인 경우")
-//    void post_실패_카페id가_잘못되는_경우() {
-//        //given
-//        Cafe cafe = cafeRepository.save(CafeFixture.get(1));
-//        Long wrongId = cafe.getId() + 100;
-//
-//        var request = PostReviewRequest.builder()
-//                .writerId("test writer id")
-//                .password("test password")
-//                .title("test title")
-//                .comment("test comment")
-//                .tasteRating(3)
-//                .ambienceRating(3)
-//                .serviceRating(3)
-//                .build();
-//
-//        //expected
-//        ReviewException e = assertThrows(ReviewException.class, () -> reviewService.post(wrongId, request));
-//        assertEquals(CAFE_NOT_FOUND, e.getErrorCode());
-//        assertEquals(String.format("%s 아이디의 카페가 없습니다.", wrongId), e.getMessage());
-//    }
+    @Test
+    @DisplayName("[post][success]: 거리 id가 있고 request 가 정상인 경우")
+    void post_success() {
+        //given
+        Direction direction = directionRepository.save(DirectionFixture.get(1));
 
-//    @Test
-//    @DisplayName("[edit][success]: 리뷰 id가 있고 request 비밀 번호가 정상인 경우")
-//    void edit_성공_리뷰id가_있고_request가_정상인_경우() {
-//        //given
-//        Cafe cafe = cafeRepository.save(CafeFixture.get(1));
-//        var postReviewRequest = PostReviewRequest.builder()
-//                .writerId("test writer id")
-//                .password("test password")
-//                .title("test title")
-//                .comment("test comment")
-//                .tasteRating(3)
-//                .ambienceRating(3)
-//                .serviceRating(3)
-//                .build();
-//        ReviewDto reviewDto = reviewService.post(cafe.getId(), postReviewRequest);
-//
-//        var request = PutReviewRequest.builder()
-//                .password("test password")
-//                .title("test title changed")
-//                .comment("test comment changed")
-//                .tasteRating(4)
-//                .ambienceRating(1)
-//                .serviceRating(5)
-//                .build();
-//        //when
-//        reviewService.edit(reviewDto.getId(), request);
-//
-//        //then
-//        Review review = reviewRepository.findById(reviewDto.getId()).get();
-//
-//        assertEquals(1, reviewRepository.findAll().size());
-//        assertEquals(request.getTitle(), review.getTitle());
-//        assertEquals(request.getComment(), review.getComment());
-//        assertEquals(request.getTasteRating(), review.getTasteRating());
-//        assertEquals(request.getAmbienceRating(), review.getAmbienceRating());
-//        assertEquals(request.getServiceRating(), review.getServiceRating());
-//    }
-//
-//    @Test
-//    @DisplayName("[edit][fail]: 리뷰 id가 없고 request 비밀 번호가 정상인 경우")
-//    void edit_실패_리뷰id가_없고_request가_정상인_경우() {
-//        //given
-//        Cafe cafe = cafeRepository.save(CafeFixture.get(1));
-//        var postReviewRequest = PostReviewRequest.builder()
-//                .writerId("test writer id")
-//                .password("test password")
-//                .title("test title")
-//                .comment("test comment")
-//                .tasteRating(3)
-//                .ambienceRating(3)
-//                .serviceRating(3)
-//                .build();
-//
-//        ReviewDto reviewDto = reviewService.post(cafe.getId(), postReviewRequest);
-//        var wrongId = reviewDto.getId() + 100;
-//
-//
-//        var request = PutReviewRequest.builder()
-//                .password("test password")
-//                .title("test title changed")
-//                .comment("test comment changed")
-//                .tasteRating(4)
-//                .ambienceRating(1)
-//                .serviceRating(5)
-//                .build();
-//
-//        //expected
-//        ReviewException e = assertThrows(ReviewException.class, () -> reviewService.edit(wrongId, request));
-//        assertEquals(REVIEW_NOT_FOUND, e.getErrorCode());
-//        assertEquals(String.format("%s 아이디의 리뷰가 없습니다.", wrongId), e.getMessage());
-//    }
-//
-//    @Test
-//    @DisplayName("[edit][fail]: 리뷰 id가 있고 request 비밀 번호가 다른 경우")
-//    void edit_실패_리뷰id가_있고_request가_잘못된_경우() {
-//        //given
-//        Cafe cafe = cafeRepository.save(CafeFixture.get(1));
-//        var postReviewRequest = PostReviewRequest.builder()
-//                .writerId("test writer id")
-//                .password("test password")
-//                .title("test title")
-//                .comment("test comment")
-//                .tasteRating(3)
-//                .ambienceRating(3)
-//                .serviceRating(3)
-//                .build();
-//        ReviewDto reviewDto = reviewService.post(cafe.getId(), postReviewRequest);
-//
-//        var request = PutReviewRequest.builder()
-//                .password("test password wrong")
-//                .title("test title changed")
-//                .comment("test comment changed")
-//                .tasteRating(4)
-//                .ambienceRating(1)
-//                .serviceRating(5)
-//                .build();
-//
-//        //expected
-//        assertThrows(ReviewException.class, () -> reviewService.edit(reviewDto.getId() + 1, request));
-//    }
-//
-//    @Test
-//    @DisplayName("[delete][success]: 카페 id가 있고 request 가 정상인 경우")
-//    void delete_성공_카페id가_있고_request가_정상인_경우() {
-//        //given
-//        Cafe cafe = cafeRepository.save(CafeFixture.get(1));
-//        var postReviewRequest = PostReviewRequest.builder()
-//                .writerId("test writer id")
-//                .password("test password")
-//                .title("test title")
-//                .comment("test comment")
-//                .tasteRating(3)
-//                .ambienceRating(3)
-//                .serviceRating(3)
-//                .build();
-//        ReviewDto reviewDto = reviewService.post(cafe.getId(), postReviewRequest);
-//
-//        int beforeSize = reviewRepository.findAll().size();
-//
-//        var deleteRequest = DeleteReviewRequest.builder()
-//                .password("test password")
-//                .build();
-//        //when
-//        reviewService.delete(reviewDto.getId(), deleteRequest);
-//
-//        //then
-//        int afterSize = reviewRepository.findAll().size();
-//        assertEquals(beforeSize - 1, afterSize);
-//    }
-//
-//    @Test
-//    @DisplayName("[delete][fail]: 리뷰 id가 없고 request 가 정상인 경우")
-//    void delete_실패_리뷰id가_없고_request가_정상인_경우() {
-//        //given
-//        Cafe cafe = cafeRepository.save(CafeFixture.get(1));
-//        var postReviewRequest = PostReviewRequest.builder()
-//                .writerId("test writer id")
-//                .password("test password")
-//                .title("test title")
-//                .comment("test comment")
-//                .tasteRating(3)
-//                .ambienceRating(3)
-//                .serviceRating(3)
-//                .build();
-//        ReviewDto reviewDto = reviewService.post(cafe.getId(), postReviewRequest);
-//
-//        int beforeSize = reviewRepository.findAll().size();
-//        long wrongId = reviewDto.getId() + 100;
-//        var deleteRequest = DeleteReviewRequest.builder()
-//                .password("test password")
-//                .build();
-//
-//        //expected
-//        ReviewException e = assertThrows(ReviewException.class, () -> reviewService.delete(wrongId, deleteRequest));
-//
-//        int afterSize = reviewRepository.findAll().size();
-//        assertEquals(beforeSize, afterSize);
-//        assertEquals(REVIEW_NOT_FOUND, e.getErrorCode());
-//        assertEquals(String.format("%s 아이디의 리뷰가 없습니다.", wrongId), e.getMessage());
-//
-//    }
-//
-//    @Test
-//    @DisplayName("[delete][fail]: 리뷰 id가 있고 request 가 없는 경우")
-//    void delete_실패_리뷰id가_있고_request가_정상인_경우() {
-//        //given
-//        Cafe cafe = cafeRepository.save(CafeFixture.get(1));
-//        var postReviewRequest = PostReviewRequest.builder()
-//                .writerId("test writer id")
-//                .password("test password")
-//                .title("test title")
-//                .comment("test comment")
-//                .tasteRating(3)
-//                .ambienceRating(3)
-//                .serviceRating(3)
-//                .build();
-//        ReviewDto reviewDto = reviewService.post(cafe.getId(), postReviewRequest);
-//
-//        var deleteRequest = DeleteReviewRequest.builder()
-//                .password("wrong test password")
-//                .build();
-//
-//        //expected
-//        ReviewException e = assertThrows(ReviewException.class, () -> reviewService.delete(reviewDto.getId(), deleteRequest));
-//        assertEquals(INVALID_PASSWORD, e.getErrorCode());
-//        assertEquals(INVALID_PASSWORD.getMessage(), e.getMessage());
-//    }
+        var request = PostReviewRequest.builder()
+                .directionId(direction.getId())
+                .writerId("test123")
+                .password("password12345")
+                .title("test title")
+                .comment("test comment")
+                .tasteRating(3)
+                .ambienceRating(3)
+                .serviceRating(3)
+                .build();
+        //when
+        var reviewDto = reviewService.post(request);
 
+        //then
+        assertEquals("test123", reviewDto.getWriterId());
+        assertTrue(passwordEncoder.matches("password12345", reviewDto.getPassword()));
+    }
 }
