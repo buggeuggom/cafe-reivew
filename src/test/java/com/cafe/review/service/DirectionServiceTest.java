@@ -2,6 +2,9 @@ package com.cafe.review.service;
 
 import com.cafe.review.domain.Direction;
 import com.cafe.review.dto.DirectionDto;
+import com.cafe.review.exception.ErrorCode;
+import com.cafe.review.exception.ReviewException;
+import com.cafe.review.fixture.DirectionFixture;
 import com.cafe.review.repository.DirectionRepository;
 import com.cafe.review.service.kakao.KakaoCategorySearchService;
 import org.junit.jupiter.api.*;
@@ -11,6 +14,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import java.util.List;
 import java.util.stream.IntStream;
 
+import static com.cafe.review.exception.ErrorCode.*;
 import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
@@ -25,48 +29,67 @@ class DirectionServiceTest {
     private KakaoCategorySearchService kakaoCategorySearchService;
 
     @AfterEach
-    void setup(){
+    void setup() {
         directionRepository.deleteAll();
     }
 
+
     @Test
-    @DisplayName("[searchDirectionListByAddress][success]: 주소가 주워졌을 때")
-    void if_address_given_then_directionDtoList (){
+    @DisplayName("[findDirectionByDirectionId][success]: ")
+    void findDirectionByDirectionId_success() {
         //given
-        String address = "경기도 군포시";
-
-        List<Direction> list = IntStream.rangeClosed(1, 10)
-                .mapToObj(i -> Direction.builder()
-                        .distance(10.0 + (double) i / 10)
-                        .inputLatitude(10.0)
-                        .inputLongitude(10.0)
-                        .inputAddress(address)
-                        .inputLongitude(11.1)
-                        .inputLatitude(11.1)
-                        .targetPhone("test phone " + i)
-                        .targetAddress("test address " + i)
-                        .targetStoreName("test cafeName " + i)
-                        .build())
-                .toList();
-
-        List<Direction> directions = directionRepository.saveAll(list);
+        Direction saved = directionRepository.save(DirectionFixture.get(1));
+        Long id = saved.getId();
 
         //when
-        var directionDtoList = directionService.searchDirectionListByAddress(address);
+        DirectionDto result = directionService.findDirectionByDirectionId(id);
 
         //then
-        assertEquals(10, directionDtoList.size());
-        assertEquals(1L, directionDtoList.get(0).getId());
+        assertEquals(saved.getId(), result.getId());
+        assertEquals(saved.getInputAddress(), result.getInputAddress());
     }
 
     @Test
-    @DisplayName("[searchDirectionListByAddress][fail]: 주소가 주워졌으나 저장된 데이터가 없어서 return 빈 리스트")
-    void if_address_given_But_empty_in_db_return_emptyList (){
+    @DisplayName("[findDirectionByDirectionId][fail]: DIRECTION_NOT_FOUND")
+    void findDirectionByDirectionId_fail() {
+        //given
+        Direction saved = directionRepository.save(DirectionFixture.get(1));
+        Long id = saved.getId();
+
+        //expected
+        ReviewException e = assertThrows(ReviewException.class, () ->
+                directionService.findDirectionByDirectionId(id + 10));
+
+        assertEquals(DIRECTION_NOT_FOUND, e.getErrorCode());
+    }
+
+    @Test
+    @DisplayName("[findDirectionListByAddress][success]: 주소가 주워졌을 때")
+    void if_address_given_then_directionDtoList() {
+        //given
+        String address = "경기도 군포시";
+        List<Direction> list = IntStream.rangeClosed(1, 10)
+                .mapToObj(i -> DirectionFixture.get(i, address))
+                .toList();
+        List<Direction> directions = directionRepository.saveAll(list);
+
+        //when
+        var directionDtoList = directionService.findDirectionListByAddress(address);
+
+        //then
+        assertEquals(directions.get(0).getId(), directionDtoList.get(0).getId());
+        assertEquals(directions.get(0).getInputAddress(), directionDtoList.get(0).getInputAddress());
+
+    }
+
+    @Test
+    @DisplayName("[findDirectionListByAddress][fail]: 주소가 주워졌으나 저장된 데이터가 없어서 return 빈 리스트")
+    void if_address_given_But_empty_in_db_return_emptyList() {
         //given
         String address = "경기도 군포시";
 
         //when
-        var directionDtoList = directionService.searchDirectionListByAddress(address);
+        var directionDtoList = directionService.findDirectionListByAddress(address);
 
         //then
         assertTrue(directionDtoList.isEmpty());
@@ -74,7 +97,7 @@ class DirectionServiceTest {
 
     @Test
     @DisplayName("[saveAll][success]")
-    void test (){
+    void saveAll_success() {
         //given
         String address = "경기도 군포시";
 
@@ -84,8 +107,6 @@ class DirectionServiceTest {
                         .inputLatitude(10.0)
                         .inputLongitude(10.0)
                         .inputAddress(address)
-                        .inputLongitude(11.1)
-                        .inputLatitude(11.1)
                         .targetPhone("test phone " + i)
                         .targetAddress("test address " + i)
                         .targetStoreName("test cafeName " + i)
@@ -96,6 +117,11 @@ class DirectionServiceTest {
 
         //then
         assertEquals(10, directionDtoList.size());
-        assertEquals(1L, directionDtoList.get(0).getId());
+        assertEquals(list.get(0).getInputAddress(), directionDtoList.get(0).getInputAddress());
+        assertEquals(list.get(0).getDistance(), directionDtoList.get(0).getDistance());
+        assertEquals(list.get(0).getInputLatitude(), directionDtoList.get(0).getInputLatitude());
+        assertEquals(list.get(0).getInputLongitude(), directionDtoList.get(0).getInputLongitude());
     }
+
+
 }

@@ -8,7 +8,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 @RequiredArgsConstructor
 public class ReviewFixture {
 
-
     public static Review get(int i, Cafe cafe, PasswordEncoder passwordEncoder) {
         return Review.builder()
                 .writerId("writer id: " + i)
