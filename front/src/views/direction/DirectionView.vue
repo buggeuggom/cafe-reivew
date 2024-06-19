@@ -42,7 +42,7 @@ const post = () => {
     alert("아이디는 영문과 숫자로 5~15자로만 가능합니다.")
     return
   }
-  if (10 > postReview.value.writerId.length) {
+  if (10 > postReview.value.password.length) {
     alert("비밀번호는 영문과 숫자로 10~20자로만 가능합니다.")
     return;
   }
