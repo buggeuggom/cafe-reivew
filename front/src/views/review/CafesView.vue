@@ -59,7 +59,7 @@ onMounted(() => {
     <tbody>
     <tr v-for="cafe in cafes" :key="cafe.id">
       <td>
-        <router-link :to="{ name: 'review', params: {cafeId: cafe.id}, props:{averageScore: cafe.averageScore}}">
+        <router-link :to="{ name: 'cafe', params: {cafeId: cafe.id}}">
           {{ cafe.storeName || "-" }}
         </router-link>
       </td>

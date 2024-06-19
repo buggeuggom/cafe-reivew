@@ -38,8 +38,20 @@ const postReview = ref({
 });
 
 const post = () => {
+  if (5 > postReview.value.writerId.length) {
+    alert("아이디는 영문과 숫자로 5~15자로만 가능합니다.")
+    return
+  }
+  if (10 > postReview.value.writerId.length) {
+    alert("비밀번호는 영문과 숫자로 10~20자로만 가능합니다.")
+    return;
+  }
+  if (5 > postReview.value.title.length) {
+    alert("제목은 5자 이상입니다.")
+    return;
+  }
   axios.post(`/myapi/reviews`, postReview.value).then(() => {
-    router.replace({ name: "reviews" });
+    router.replace({name: "cafes"});
   });
 };
 </script>
@@ -75,11 +87,13 @@ const post = () => {
 
   <el-form ref="formRef" style="max-width: 80%" :model="postReview" label-width="auto" class="demo-dynamic">
     <el-form-item label="아이디">
-      <el-input v-model="postReview.writerId" placeholder="아이디는 영문과 숫자로 5~15자로만 가능합니다."/>
+      <el-input minlength="5" maxlength="15" show-word-limit v-model="postReview.writerId"
+                placeholder="아이디는 영문과 숫자로 5~15자로만 가능합니다."/>
     </el-form-item>
 
     <el-form-item label="비밀번호">
-      <el-input v-model="postReview.password" placeholder="비밀번호는 영문과 숫자로 10~20자로만 가능합니다."/>
+      <el-input minlength="10" maxlength="20" show-word-limit show-password clearable type="password"
+                v-model="postReview.password" placeholder="비밀번호는 영문과 숫자로 10~20자로만 가능합니다."/>
     </el-form-item>
 
     <el-form-item label="평가" class="m-auto">
