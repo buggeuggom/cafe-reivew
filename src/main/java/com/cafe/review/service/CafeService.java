@@ -1,7 +1,6 @@
 package com.cafe.review.service;
 
 import com.cafe.review.domain.Cafe;
-import com.cafe.review.domain.Review;
 import com.cafe.review.dto.CafeDto;
 import com.cafe.review.dto.CafeReviewDto;
 import com.cafe.review.dto.DirectionDto;
