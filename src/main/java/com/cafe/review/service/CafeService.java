@@ -35,7 +35,7 @@ public class CafeService {
         var addressDocumentDto = kakaoApiResponseDto.getDocumentList().get(0);
 
         String modifiedAddress = addressDocumentDto.getAddressName();
-        var searchedDirectionDtoList = directionService.searchDirectionListByAddress(modifiedAddress);
+        var searchedDirectionDtoList = directionService.findDirectionListByAddress(modifiedAddress);
 
         if (CollectionUtils.isEmpty(searchedDirectionDtoList)) {
             var directionDtoList = directionService.buildDirectionList(addressDocumentDto);
