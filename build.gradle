@@ -48,3 +48,15 @@ dependencies {
 tasks.named('test') {
     useJUnitPlatform()
 }
+// 이름 변경
+bootJar{
+    archiveFileName = 'app.jar'
+}
+//test 생략
+tasks.withType(Test) {
+    enabled = false
+}
+// plain jar 무시
+jar{
+    enabled = false
+}
