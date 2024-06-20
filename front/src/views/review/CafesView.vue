@@ -21,7 +21,7 @@ const cafes = ref(
     })
 );
 const search = () => {
-  axios.get(`/myapi/cafes`, {params: cafeSearchRequest.value}).then(response => {
+  axios.get(`/api/v1/cafes`, {params: cafeSearchRequest.value}).then(response => {
     cafes.value = []
     response.data.forEach((r: any) => {cafes.value.push(r)})
   })
