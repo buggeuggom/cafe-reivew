@@ -30,11 +30,11 @@ const reviews = ref([{
 }]);
 
 onMounted(() => {
-  axios.get(`/myapi/cafes/${props.cafeId}`).then(res => {
+  axios.get(`/api/v1/cafes/${props.cafeId}`).then(res => {
     cafe.value = res.data;
   });
 
-  axios.get(`/myapi/cafes/${props.cafeId}/reviews`).then(res => {
+  axios.get(`/api/v1/cafes/${props.cafeId}/reviews`).then(res => {
     reviews.value = []
     reviews.value = res.data;
   });

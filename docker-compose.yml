@@ -1,0 +1,32 @@
+version: "3.8"
+services:
+  cafe-reviews-database:
+    container_name: cafe-reviews-database
+    build:
+      dockerfile: Dockerfile
+      context: ./database
+    image: hwnaginkyu42/cafe-reviews-database
+    environment:
+      - MARIADB_DATABASE=cafe-reviews
+      - MARIADB_ROOT_PASSWORD=${SPRING_DATASOURCE_PASSWORD}
+    volumes:
+      - ./database/config:/etc/mysql/conf.d
+    ports:
+      - "3306:3306"
+    restart: always
+  cafe-reviews-app:
+    container_name: cafe-reviews-app
+    build: .
+    depends_on:
+      - cafe-reviews-database
+    image: hwnaginkyu42/cafe-reviews-app
+    environment:
+      - SPRING_DATASOURCE_USERNAME=${SPRING_DATASOURCE_USERNAME}
+      - SPRING_DATASOURCE_PASSWORD=${SPRING_DATASOURCE_PASSWORD}
+      - SPRING_PROFILES_ACTIVE=${SPRING_PROFILES_ACTIVE}
+      - KAKAO_REST_API_KEY=${KAKAO_REST_API_KEY}
+    volumes:
+      - ./database/config:/etc/mysql/conf.d
+    ports:
+      - "80:8080"
+    restart: always

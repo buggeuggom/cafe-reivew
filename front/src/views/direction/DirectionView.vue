@@ -21,7 +21,7 @@ const distance = ref(
       targetRoadAddressName: ""
     })
 onMounted(() => {
-  axios.get(`/myapi/directions/${props.directionId}`).then(res => {
+  axios.get(`/api/v1/directions/${props.directionId}`).then(res => {
     distance.value = res.data;
   });
 });
@@ -50,7 +50,7 @@ const post = () => {
     alert("제목은 5자 이상입니다.")
     return;
   }
-  axios.post(`/myapi/reviews`, postReview.value).then(() => {
+  axios.post(`/api/v1/reviews`, postReview.value).then(() => {
     router.replace({name: "cafes"});
   });
 };

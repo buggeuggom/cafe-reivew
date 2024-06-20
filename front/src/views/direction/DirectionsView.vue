@@ -20,7 +20,7 @@ const search = function () {
     return
   }
   const queryParam = {address: address.value}
-  axios.get(`/myapi/directions`, {params: queryParam})
+  axios.get(`/api/v1/directions`, {params: queryParam})
       .then(response => {
             recommendations.value = []
             if (response.data.length == 0) {
