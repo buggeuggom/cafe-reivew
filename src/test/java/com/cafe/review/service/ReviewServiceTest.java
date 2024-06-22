@@ -41,7 +41,6 @@ class ReviewServiceTest {
     @BeforeEach
     void setup() {
         directionRepository.deleteAll();
-        reviewRepository.deleteAll();
         cafeRepository.deleteAll();
     }
 
@@ -99,6 +98,30 @@ class ReviewServiceTest {
     @Test
     @DisplayName("[post][success]: 거리 id가 있고 request 가 정상인 경우")
     void post_success() {
+        //given
+        Direction direction = directionRepository.save(DirectionFixture.get(1));
+
+        var request = PostReviewRequest.builder()
+                .directionId(direction.getId())
+                .writerId("test123")
+                .password("password12345")
+                .title("test title")
+                .comment("test comment")
+                .tasteRating(3)
+                .ambienceRating(3)
+                .serviceRating(3)
+                .build();
+        //when
+        var reviewDto = reviewService.post(request);
+
+        //then
+        assertEquals("test123", reviewDto.getWriterId());
+        assertTrue(passwordEncoder.matches("password12345", reviewDto.getPassword()));
+    }
+
+    @Test
+    @DisplayName("[post][success]: 거리 id가 있고 request 가 정상인 경우")
+    void post_fail() {
         //given
         Direction direction = directionRepository.save(DirectionFixture.get(1));
 

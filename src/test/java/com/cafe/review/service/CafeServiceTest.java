@@ -13,7 +13,6 @@ import com.cafe.review.fixture.ReviewFixture;
 import com.cafe.review.repository.DirectionRepository;
 import com.cafe.review.repository.ReviewRepository;
 import com.cafe.review.repository.cafe.CafeRepository;
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
