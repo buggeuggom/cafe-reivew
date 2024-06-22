@@ -5,7 +5,6 @@ import com.cafe.review.dto.CafeDto;
 import com.cafe.review.dto.CafeReviewDto;
 import com.cafe.review.dto.DirectionDto;
 import com.cafe.review.dto.request.CafeSearchRequest;
-import com.cafe.review.exception.ErrorCode;
 import com.cafe.review.exception.ReviewException;
 import com.cafe.review.repository.cafe.CafeRepository;
 import com.cafe.review.service.kakao.KakaoAddressSearchService;
@@ -17,6 +16,8 @@ import org.springframework.util.CollectionUtils;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
+
+import static com.cafe.review.exception.ErrorCode.CAFE_NOT_FOUND;
 
 @Service
 @RequiredArgsConstructor
@@ -53,7 +54,8 @@ public class CafeService {
 
     @Transactional(readOnly = true)
     public CafeDto getCafe(Long cafeId) {
-        Cafe cafe = cafeRepository.findById(cafeId).orElseThrow(() -> new ReviewException(ErrorCode.CAFE_NOT_FOUND));
+        Cafe cafe = cafeRepository.findById(cafeId).orElseThrow(() ->
+                new ReviewException(CAFE_NOT_FOUND, String.format("%s 아이디의 카페가 없습니다.", cafeId)));
         return  CafeDto.fromEntity(cafe);
     }
 }

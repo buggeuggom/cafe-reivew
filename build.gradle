@@ -53,9 +53,9 @@ bootJar{
     archiveFileName = 'app.jar'
 }
 //test 생략
-tasks.withType(Test) {
-    enabled = false
-}
+//tasks.withType(Test) {
+//    enabled = false
+//}
 // plain jar 무시
 jar{
     enabled = false

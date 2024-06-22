@@ -65,7 +65,7 @@ class DirectionServiceTest {
 
     @Test
     @DisplayName("[findDirectionListByAddress][success]: 주소가 주워졌을 때")
-    void if_address_given_then_directionDtoList() {
+    void findDirectionListByAddress_success_if_address_given_then_directionDtoList() {
         //given
         String address = "경기도 군포시";
         List<Direction> list = IntStream.rangeClosed(1, 10)
@@ -83,8 +83,8 @@ class DirectionServiceTest {
     }
 
     @Test
-    @DisplayName("[findDirectionListByAddress][fail]: 주소가 주워졌으나 저장된 데이터가 없어서 return 빈 리스트")
-    void if_address_given_But_empty_in_db_return_emptyList() {
+    @DisplayName("[findDirectionListByAddress][success]: 주소가 주워졌으나 저장된 데이터가 없어서 return 빈 리스트")
+    void findDirectionListByAddress_success_if_address_given_But_empty_in_db_return_emptyList() {
         //given
         String address = "경기도 군포시";
 
