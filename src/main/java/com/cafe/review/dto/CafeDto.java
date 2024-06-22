@@ -29,6 +29,7 @@ public class CafeDto {
 
     public static CafeDto fromEntity(Cafe entity){
         return CafeDto.builder()
+                .id(entity.getId())
                 .storeName(entity.getStoreName())
                 .address(entity.getAddress())
                 .phone(entity.getPhone())
