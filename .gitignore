@@ -73,3 +73,5 @@ Temporary Items
 
 ###qurydsl
 src/main/generated/
+
+src/main/resources/application.yml
