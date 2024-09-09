@@ -69,7 +69,8 @@ class CafeServiceTest {
 
     @Test
     @DisplayName("[searchNearbyStoreList][success]: db에 데이터가 없는 경우 db에 저장하고 데이터를 출력한다")
-    void searchNearbyStoreList_success_if_address_given_then_db_result_empty() {        //given
+    void searchNearbyStoreList_success_if_address_given_then_db_result_empty() {
+        //given
         var address = "경기도 군포시";
 
         //when

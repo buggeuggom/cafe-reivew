@@ -28,4 +28,19 @@ class KakaoAddressSearchServiceTest {
         assertTrue(result.getMetaDto().getTotalCount() > 0);
         assertNotNull(result.getDocumentList().get(0).getAddressName());
     }
+
+    @Test
+    @DisplayName("[requestAddressSearch][fail]")
+    void if_address_given_fail() {
+        //given
+        String address = "경기도 군포시";
+
+        //when
+        var result = kakaoAddressSearchService.requestAddressSearch(address);
+
+        //then
+        assertFalse(result.getDocumentList().isEmpty());
+        assertFalse(result.getMetaDto().getTotalCount().equals(0));
+        assertNotEquals("address name", result.getDocumentList().get(0).getAddressName());
+    }
 }

@@ -61,14 +61,6 @@ public class DirectionService {
                 .collect(Collectors.toList());
     }
 
-
-    @Transactional
-    @Scheduled(cron = "0 0 1 1 * *") //매월 1일 1시
-    public void autoDelete() {
-        directionRepository.deleteByCreatedAtLessThanEqual(LocalDateTime.now().minusMonths(1));
-    }
-
-
     public List<DirectionDto> buildDirectionList(AddressDocumentDto inputDto) {
 
         if (Objects.isNull(inputDto)) return Collections.emptyList();
