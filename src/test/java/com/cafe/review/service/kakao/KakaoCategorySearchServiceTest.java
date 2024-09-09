@@ -17,7 +17,7 @@ class KakaoCategorySearchServiceTest {
 
     @Test
     @DisplayName("[requestStoreCategorySearch][success]")
-    void test() {
+    void if_parameter_given_success() {
         //given
         //"경기도 군포시" 위경도
         double latitude = 37.3616318289596d;
@@ -28,10 +28,27 @@ class KakaoCategorySearchServiceTest {
         var categoryResponseDto = kakaoCategorySearchService.requestStoreCategorySearch(latitude, longitude, radius);
 
         //then
-        System.out.println(categoryResponseDto);
         assertFalse(categoryResponseDto.getDocumentList().isEmpty());
         assertTrue(categoryResponseDto.getMetaDto().getTotalCount() > 0);
         assertNotNull(categoryResponseDto.getDocumentList().get(0).getAddressName());
+    }
 
+
+    @Test
+    @DisplayName("[requestStoreCategorySearch][fail]")
+    void if_parameter_given_fail() {
+        //given
+        //"경기도 군포시" 위경도
+        double latitude = 37.3616318289596d;
+        double longitude = 126.935205932727d;
+        double radius = 3.0d;
+
+        //when
+        var categoryResponseDto = kakaoCategorySearchService.requestStoreCategorySearch(latitude, longitude, radius);
+
+        //then
+        assertFalse(categoryResponseDto.getDocumentList().isEmpty());
+        assertFalse(categoryResponseDto.getMetaDto().getTotalCount() == 0);
+        assertNotEquals("testCafe", categoryResponseDto.getDocumentList().get(0).getPlaceName());
     }
 }
